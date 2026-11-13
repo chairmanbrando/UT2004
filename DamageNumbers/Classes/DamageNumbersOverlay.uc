@@ -41,6 +41,7 @@ var Sound HitSound;
 var float HitSoundBoost;		// HitSoundVolume 1 plays at this; plain 1 is lost under the game's sounds
 var float HitSoundInterval;		// at most one per this long (one hit on two targets)
 var float LastHitSoundTime;
+var int PendingSoundAmount;		// the frame's hits so far (one explosion on several targets), sounded together in Tick
 
 // optionally, the hit sound's pitch by the hit's damage: HitSoundPitchHigh for
 // the smallest, down to HitSoundPitchLow at HitSoundPitchDamage and up
@@ -60,7 +61,23 @@ simulated function ShowHit(PlayerController PC, Pawn Victim, vector Loc, int Amo
     if ( !InSight(Victim, Loc, CamLoc) )
         return;
     AddDamage(Victim, Loc, Amount, Kind);
-    PlayHitSound(PC, Amount);
+    PendingSoundAmount += Amount;
+    Enable('Tick');
+}
+
+// the frame's hits are in: one sound for them all, pitched by their total
+simulated function Tick(float DeltaTime)
+{
+    local PlayerController PC;
+
+    if ( PendingSoundAmount > 0 )
+    {
+        PC = Level.GetLocalPlayerController();
+        if ( PC != None )
+            PlayHitSound(PC, PendingSoundAmount);
+        PendingSoundAmount = 0;
+    }
+    Disable('Tick');
 }
 
 simulated function PlayHitSound(PlayerController PC, int Amount)
