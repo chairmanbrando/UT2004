@@ -4,17 +4,17 @@
 //  - Remaining UDamage is dropped when its holder is fragged (stock behaviour).
 //  - Kills made with UDamage add to its time, up to a cap.
 //  - Dropped UDamage can be caught mid-air, and respects the cap
-//    (UDamageV2Reward).
+//    (UDamageRewardV2Pickup).
 //  - The "UDamage ending" warning restarts properly after an extension
 //    (UDamageUtil).
 //  - UDamage chargers use UDamageV2Pack for a longer-range respawn sound.
-//  - Optionally defensive: UDamage protects its holder (UDamageV2Rules.NetDamage)
+//  - Optionally defensive: UDamage protects its holder (UDamageRewardV2Rules.NetDamage)
 //    instead of doubling damage dealt, with its own pickup message (DefensiveUDamagePack,
 //    DefensiveUDamageReward).
-//  Kill and damage handling is in the game rules class 'UDamageV2Rules'.
+//  Kill and damage handling is in the game rules class 'UDamageRewardV2Rules'.
 //==============================================================================
 
-class UDamageV2Mutator extends Mutator
+class UDamageRewardV2Mutator extends Mutator
     config;
 
 var config float KillBonusTime;		// seconds of UDamage added per kill
@@ -30,7 +30,7 @@ var localized string SoundRadiusDisplayText, SoundDisplayText, SoundRadiusDescTe
 
 event PostBeginPlay()
 {
-    local UDamageV2Rules G;
+    local UDamageRewardV2Rules G;
 
     Super.PostBeginPlay();
 
@@ -47,7 +47,7 @@ event PostBeginPlay()
     // holders' characters glow on every client (teal when defensive)
     Spawn(class'UDamageGlowFX').bDefensive = bDefensiveUDamage;
 
-    G = Spawn(class'UDamageV2Rules');
+    G = Spawn(class'UDamageRewardV2Rules');
     G.KillBonusTime = KillBonusTime;
     G.bDefensive = bDefensiveUDamage;
     if ( bCapUDamageTime )

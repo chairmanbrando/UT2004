@@ -4,7 +4,7 @@
 //  for kills, and dropped UDamage pickups respect the configured time cap.
 //==============================================================================
 
-class UDamageV2Rules extends UDamageRules;
+class UDamageRewardV2Rules extends UDamageRules;
 
 var float KillBonusTime;
 var float MaxUDamageTime;
@@ -18,7 +18,7 @@ var float DefensiveMomentumScale;	// knockback they take from others
 // its holder takes no self or fall damage (free rocket and shield jumps), a
 // third of other damage, and half the knockback from others.
 // Objectives and power cores double it without passing through here, so
-// UDamageV2Mutator leaves it off in Onslaught and Assault.
+// UDamageRewardV2Mutator leaves it off in Onslaught and Assault.
 function int NetDamage( int OriginalDamage, int Damage, pawn injured, pawn instigatedBy, vector HitLocation, out vector Momentum, class<DamageType> DamageType )
 {
     if ( bDefensive )
@@ -67,11 +67,11 @@ function ScoreKill(Controller Killer, Controller Killed)
     Super.ScoreKill(Killer, Killed);
 }
 
-// Same as UDamageRules.ThrowUDamage, but spawns a UDamageV2Reward that knows the cap
+// Same as UDamageRules.ThrowUDamage, but spawns a UDamageRewardV2Pickup that knows the cap
 function ThrowUDamage( Controller Killer, xPawn Killed )
 {
     local vector tossdir, x, y, z;
-    local UDamageV2Reward Reward;
+    local UDamageRewardV2Pickup Reward;
 
     if ( Killer == None || Killed == None )
         return;
@@ -79,7 +79,7 @@ function ThrowUDamage( Controller Killer, xPawn Killed )
     if ( bDefensive )
         Reward = Spawn( class'DefensiveUDamageReward', , , Killed.Location );
     else
-        Reward = Spawn( class'UDamageV2Reward', , , Killed.Location );
+        Reward = Spawn( class'UDamageRewardV2Pickup', , , Killed.Location );
     if ( Reward == None )
         return;
 

@@ -38,7 +38,7 @@ var array<HitTotal> Totals;
 
 var array<DamageNumbersInfo> DamageNumbersInfos;
 
-// UDamageV2's defensive UDamage: its holder takes less damage instead of
+// UDamage Reward v2's defensive UDamage: its holder takes less damage instead of
 // dealing double. Read from its game rules by name, so as not to need its
 // package; checked once, at the first hit.
 var bool bCheckedDefensiveUDamage, bDefensiveUDamage;
@@ -131,7 +131,7 @@ function byte DamageKind(Pawn Injured, Pawn InstigatedBy)
     {
         bCheckedDefensiveUDamage = true;
         for ( G = Level.Game.GameRulesModifiers; G != None; G = G.NextGameRules )
-            if ( G.IsA('UDamageV2Rules') && G.GetPropertyText("bDefensive") ~= "True" )
+            if ( G.IsA('UDamageRewardV2Rules') && G.GetPropertyText("bDefensive") ~= "True" )
                 bDefensiveUDamage = true;
     }
 

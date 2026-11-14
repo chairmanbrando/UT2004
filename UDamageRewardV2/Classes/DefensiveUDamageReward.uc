@@ -3,7 +3,7 @@
 //  what it does now, drawn teal (see DefensiveUDamagePack).
 //==============================================================================
 
-class DefensiveUDamageReward extends UDamageV2Reward;
+class DefensiveUDamageReward extends UDamageRewardV2Pickup;
 
 simulated event PostBeginPlay()
 {

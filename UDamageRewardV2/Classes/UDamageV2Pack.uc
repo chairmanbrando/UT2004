@@ -9,7 +9,7 @@
 class UDamageV2Pack extends UDamagePack
     notplaceable;
 
-var string SpawnSoundName;	// set by UDamageV2Mutator
+var string SpawnSoundName;	// set by UDamageRewardV2Mutator
 var float SpawnSoundRadius;	// 0 keeps the stock respawn effect and sound
 var float SpawnSoundVolume;
 var Sound SpawnSound;

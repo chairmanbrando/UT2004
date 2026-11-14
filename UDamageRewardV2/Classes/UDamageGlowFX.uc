@@ -1,5 +1,5 @@
 //==============================================================================
-//  Spawned by UDamageV2Mutator; replicated to every client, where it adds
+//  Spawned by UDamageRewardV2Mutator; replicated to every client, where it adds
 //  UDamageGlowInteraction to the local player's viewport so UDamage holders'
 //  characters glow: purple, or teal when UDamage is defensive.
 //==============================================================================

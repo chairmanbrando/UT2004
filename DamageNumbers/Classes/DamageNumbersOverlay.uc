@@ -5,7 +5,7 @@
 //  one number, which starts over with each. Drawn in screen space at the
 //  target's projected position, following it while it's in view; hits out of
 //  sight behind walls or other world geometry aren't shown (ShowHit). UDamage
-//  purple while your UDamage doubles them; teal (UDamageV2's defensive
+//  purple while your UDamage doubles them; teal (UDamage Reward v2's defensive
 //  UDamage) when the target's cuts them. Fed by
 //  DamageNumbersInfo; drawn by the HUD with its other overlays, so it hides
 //  with the HUD. Also plays the hit sound (PlayHitSound), optionally pitched

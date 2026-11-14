@@ -9,7 +9,7 @@
 //  removes it, so the catcher heard and saw the pickup but got no UDamage.
 //==============================================================================
 
-class UDamageV2Reward extends UDamageReward;
+class UDamageRewardV2Pickup extends UDamageReward;
 
 var float MaxUDamageTime;
 

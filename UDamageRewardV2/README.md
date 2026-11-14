@@ -4,6 +4,8 @@ Fixes a long-standing bug where a dropped UDamage caught in midair wouldn't actu
 
 Note: This is meant to be used *in place* of the original mutator rather than alongside it. The original doesn't provide a `GroupName` in its `defaultproperties` so I cannot make these two mutually exclusive. It's on you, brother!
 
+**But wait, there's more!**
+
 To enhance the carnage, this version is configurable to allow for kills to extend the length of your damage boost. If you so desire you can set it so that you're basically always dealing double damage, but a more "competitive" setting is more like 1-2 seconds of extra time per kill.
 
 Furthermore, the sound played when the UDamage spawns, and the range at which it's heard, can be changed. Why force pickup timing onto players when you can simply announce the UDamage's return to the whole arena? 🙃
