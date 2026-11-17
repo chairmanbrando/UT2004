@@ -1,7 +1,8 @@
 //==============================================================================
 //  Adrenaline Reward's game rules: a player killed by another (not a suicide)
-//  loses their whole adrenaline, thrown from their body as one pickup per
-//  PickupAmount of it (any remainder is lost).
+//  throws ThrowPercent of their adrenaline from their body as one pickup per
+//  PickupAmount (any remainder is lost), and loses the rest too unless
+//  bKeepUnthrown.
 //==============================================================================
 
 class AdrenalineRewardRules extends GameRules;
@@ -10,13 +11,17 @@ var MutAdrenalineReward Mut;
 
 function ScoreKill(Controller Killer, Controller Killed)
 {
-    local int Amount, n;
+    local int Amount, Thrown, n;
 
     if ( Killer != None && Killed != None && Killer != Killed && Killed.Adrenaline > 0 )
     {
         Amount = Mut.GetPickupAmount();
-        n = int(Killed.Adrenaline) / Amount;
-        Killed.Adrenaline -= int(Killed.Adrenaline);
+        Thrown = int(Killed.Adrenaline) * Mut.GetThrowPercent() / 100;
+        n = Thrown / Amount;
+        if ( Mut.bKeepUnthrown )
+            Killed.Adrenaline -= Thrown;
+        else
+            Killed.Adrenaline -= int(Killed.Adrenaline);
         if ( n > 0 )
             ThrowAdrenaline(xPawn(Killed.Pawn), n, Amount);
     }
