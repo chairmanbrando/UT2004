@@ -13,6 +13,8 @@ var string SpawnSoundName;	// set by UDamageRewardV2Mutator
 var float SpawnSoundRadius;	// 0 keeps the stock respawn effect and sound
 var float SpawnSoundVolume;
 var Sound SpawnSound;
+var bool bStackTime;		// set by UDamageRewardV2Mutator in Ruckus Mode: adds to the holder's time, up to MaxStackTime
+var float MaxStackTime;
 
 function RespawnEffect()
 {
@@ -43,17 +45,22 @@ function RespawnEffect()
     Source.PlaySound(SpawnSound, SLOT_None, SpawnSoundVolume, false, SpawnSoundRadius);
 }
 
-// same as UDamagePack's, plus the warning reset
+// same as UDamagePack's, plus the warning reset and, in Ruckus Mode, stacking
+// (stock tops the holder up to 30s instead)
 auto state Pickup
 {
     function Touch( actor Other )
     {
         local Pawn P;
+        local float Time;
 
         if ( ValidTouch(Other) )
         {
             P = Pawn(Other);
-            P.EnableUDamage(30);
+            Time = 30;
+            if ( bStackTime && xPawn(P) != None )
+                Time = FMin(Time + FMax(xPawn(P).UDamageTime - Level.TimeSeconds, 0), MaxStackTime);
+            P.EnableUDamage(Time);
             class'UDamageUtil'.static.ResetWarningIfExtended(P);
             AnnouncePickup(P);
             SetRespawn();
@@ -66,4 +73,5 @@ auto state Pickup
 defaultproperties
 {
     SpawnSoundVolume=0.450000
+    MaxStackTime=999.000000
 }

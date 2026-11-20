@@ -7,11 +7,15 @@
 //  - Pickup: the stock skin (PickupSkins.Shaders.FinalDamShader) multiplies a
 //    grey texture by a purple ConstantColor; this uses teal. Its purple
 //    reflection map is replaced by a neutral one, tinted teal.
+//  - HUD icon: the stock one (in HUDContent.Generic.HUD) is drawn purple, so
+//    tinting can't make it teal; it's been hue-shifted and imported here
+//    (Textures\TealUDamageIcon.tga, the icon in the top-left 73x82).
 //==============================================================================
 
 class DefensiveUDamageMaterials extends Object;
 
 #exec TEXTURE IMPORT NAME=TealGlow FILE=Textures\TealGlow.tga MIPS=On DXT=5
+#exec TEXTURE IMPORT NAME=TealUDamageIcon FILE=Textures\TealUDamageIcon.tga MIPS=Off DXT=5
 
 var Color TealColor;
 
