@@ -1,0 +1,19 @@
+# Ignore the whole game install except...
+/*
+
+# These particular files...
+!/.gitignore
+!/README.md
+
+# Handy setup stuff and tools...
+!/.vscode/
+!/Tools/
+
+# And these mutator sources.
+!/UT2026/
+!/UT2026Bots/
+!/UDamageRewardV2/
+!/AdrenalineReward/
+!/DamageNumbers/
+!/GunGame/
+!/WeaponTest/

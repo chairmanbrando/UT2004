@@ -1,0 +1,70 @@
+{
+    "cSpell.words": [
+        "defaultproperties",
+        "Horiz",
+        "Minigun",
+        "Telefrag",
+        "Translocator"
+    ],
+    // Tools on PATH in VS Code's terminals, for "build <package>" (Tools\build.cmd)
+    "terminal.integrated.env.windows": {
+        "PATH": "${workspaceFolder}\\Tools;${env:PATH}"
+    },
+    // run the PowerShell extension's own terminal hidden, so closing terminals
+    // can't kill it (and IntelliSense with it)
+    "powershell.integratedConsole.startInBackground": true,
+    // search everything shown, not just what git tracks (.gitignore hides UC Files)
+    "search.useIgnoreFiles": false,
+    // only folders with UnrealScript source are shown
+    "files.exclude": {
+        "Animations": true,
+        "Benchmark": true,
+        "directx9c": true,
+        "Downloads": true,
+        "ForceFeedback": true,
+        "Help": true,
+        "KarmaData": true,
+        "Manual": true,
+        "Maps": true,
+        "Music": true,
+        "Prefabs": true,
+        "Saves": true,
+        "Sounds": true,
+        "Speech": true,
+        "StaticMeshes": true,
+        // "System": true,
+        "SystemARM64": true,
+        "SystemLocalized": true,
+        "Textures": true,
+        "ut2004 content 2": true,
+        "Web": true,
+        "installscript.vdf": true,
+        // translations other than English (.int)
+        "**/*.{det,est,frt,het,itt,kot,plt,rut}": true,
+        // cache files and other bs
+        "**/*.{dll,u,ucl}": true
+    },
+    "files.watcherExclude": {
+        "Animations/**": true,
+        "Benchmark/**": true,
+        "directx9c/**": true,
+        "Downloads/**": true,
+        "ForceFeedback/**": true,
+        "Help/**": true,
+        "KarmaData/**": true,
+        "Manual/**": true,
+        "Maps/**": true,
+        "Music/**": true,
+        "Prefabs/**": true,
+        "Saves/**": true,
+        "Sounds/**": true,
+        "Speech/**": true,
+        "StaticMeshes/**": true,
+        "System/**": true,
+        "SystemARM64/**": true,
+        "SystemLocalized/**": true,
+        "Textures/**": true,
+        "ut2004 content 2/**": true,
+        "Web/**": true
+    }
+}
