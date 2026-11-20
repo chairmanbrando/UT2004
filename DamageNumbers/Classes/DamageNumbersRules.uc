@@ -52,7 +52,7 @@ function int NetDamage( int OriginalDamage, int Damage, pawn injured, pawn insti
     if ( NextGameRules != None )
         Damage = NextGameRules.NetDamage( OriginalDamage,Damage,injured,instigatedBy,HitLocation,Momentum,DamageType );
 
-    NoteHit(injured, instigatedBy, Damage, DamageType == class'Crushed');
+    NoteHit(injured, instigatedBy, Damage, ClassIsChildOf(DamageType, class'Crushed'));
     return Damage;
 }
 
