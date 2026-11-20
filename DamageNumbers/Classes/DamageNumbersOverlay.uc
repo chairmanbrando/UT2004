@@ -219,15 +219,18 @@ simulated function bool InSight(Pawn Victim, vector Loc, vector CamLoc)
         && FastTrace(Victim.Location, CamLoc);
 }
 
-// white for small hits, through yellow, to red for 100 and up
+// white for small hits, through yellow at 50 and orange at 100, to red for
+// 200 and up
 simulated function color NumberColor(int Amount, float Alpha)
 {
     local float T;
 
-    T = FClamp(Amount / 100.0, 0, 1);
+    T = FClamp(Amount / 100.0, 0, 2);
     if ( T < 0.5 )
         return class'Canvas'.static.MakeColor(255, 255, 255 - 400 * T, 255 * Alpha);
-    return class'Canvas'.static.MakeColor(255, 255 - 300 * (T - 0.5), 55 - 110 * (T - 0.5), 255 * Alpha);
+    if ( T < 1 )
+        return class'Canvas'.static.MakeColor(255, 255 - 300 * (T - 0.5), 55 - 110 * (T - 0.5), 255 * Alpha);
+    return class'Canvas'.static.MakeColor(255, 105 - 105 * (T - 1), 0, 255 * Alpha);
 }
 
 defaultproperties
