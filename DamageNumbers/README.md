@@ -21,3 +21,5 @@ HitSoundPitchLow=0.5
 ```
 
 The range of `HitSoundVolume` is `0.0` to `2.0` in case you want it gone or extra loud. When `bHitSoundPitchByDamage` is true, the pitch is scaled by the pitch options between 1 measly damage (assuming that can even happen) and `HitSoundPitchDamage`. Is it a little goofy to hear all this dinging and donging as you blast people/bots? Yes. Is it enjoyable nonetheless? Yes. Yes, it is.
+
+And if you land on someone's head, you hear a *boing* instead. Because why not.

@@ -9,6 +9,8 @@
 //  of the frame. Measuring from a player's first hit to the end of the frame
 //  instead would count others' hits in between as theirs. Overkill is
 //  included: health goes below 0.
+//  Landing on someone's head (Pawn.BaseChange: Crushed damage, from the pawn
+//  landing) is flagged as a stomp, which sounds a boing instead of the hit.
 //==============================================================================
 
 class DamageNumbersRules extends GameRules;
@@ -22,6 +24,7 @@ struct LastHit
     var int Dealt;              // its damage as known here, if the target's gone (gibbed)
     var vector Loc;             // above its head
     var byte Kind;              // DamageNumbersOverlay's colour: 1 UDamage, 2 defensive UDamage
+    var bool bStomp;            // landed on the target's head
 };
 var array<LastHit> LastHits;
 
@@ -33,6 +36,7 @@ struct HitTotal
     var int Amount;
     var vector Loc;
     var byte Kind;
+    var bool bStomp;
 };
 var array<HitTotal> Totals;
 
@@ -48,13 +52,13 @@ function int NetDamage( int OriginalDamage, int Damage, pawn injured, pawn insti
     if ( NextGameRules != None )
         Damage = NextGameRules.NetDamage( OriginalDamage,Damage,injured,instigatedBy,HitLocation,Momentum,DamageType );
 
-    NoteHit(injured, instigatedBy, Damage);
+    NoteHit(injured, instigatedBy, Damage, DamageType == class'Crushed');
     return Damage;
 }
 
 // Settles the target's previous hit this frame (now taken effect), then
 // notes this one's starting point
-function NoteHit(Pawn Injured, Pawn InstigatedBy, int Damage)
+function NoteHit(Pawn Injured, Pawn InstigatedBy, int Damage, bool bStomp)
 {
     local PlayerController PC;
     local int i;
@@ -84,6 +88,7 @@ function NoteHit(Pawn Injured, Pawn InstigatedBy, int Damage)
         LastHits[i].Dealt = Damage * InstigatedBy.DamageScaling;
         LastHits[i].Kind = DamageKind(Injured, InstigatedBy);
         LastHits[i].Loc = Injured.Location + (Injured.CollisionHeight + 16) * vect(0,0,1);
+        LastHits[i].bStomp = bStomp;
     }
     Enable('Tick');
 }
@@ -115,7 +120,10 @@ function Settle(int i)
         Totals.Length = t + 1;
         Totals[t].Victim = LastHits[i].Victim;
         Totals[t].PC = PC;
+        Totals[t].bStomp = false;
     }
+    if ( LastHits[i].bStomp )
+        Totals[t].bStomp = true;
     Totals[t].Amount += Amount;
     Totals[t].Loc = LastHits[i].Loc;
     Totals[t].Kind = LastHits[i].Kind;
@@ -160,7 +168,7 @@ function Tick(float DeltaTime)
         V = Totals[i].Victim;
         if ( V != None && V.bDeleteMe )
             V = None;
-        GetDamageNumbersInfo(Totals[i].PC).ClientShowDamage(V, Totals[i].Loc, Totals[i].Amount, Totals[i].Kind);
+        GetDamageNumbersInfo(Totals[i].PC).ClientShowDamage(V, Totals[i].Loc, Totals[i].Amount, Totals[i].Kind, Totals[i].bStomp);
     }
     LastHits.Length = 0;
     Totals.Length = 0;

@@ -9,13 +9,14 @@
 //  UDamage) when the target's cuts them. Fed by
 //  DamageNumbersInfo; drawn by the HUD with its other overlays, so it hides
 //  with the HUD. Also plays the hit sound (PlayHitSound), optionally pitched
-//  by the hit's damage.
+//  by the hit's damage, or a cartoon boing when you land on someone's head.
 //==============================================================================
 
 class DamageNumbersOverlay extends HudOverlay
     config(User);
 
 #exec AUDIO IMPORT FILE=Sounds\Tonk.wav NAME=Tonk
+#exec AUDIO IMPORT FILE=Sounds\Boing.wav NAME=Boing
 
 struct DamageNumber
 {
@@ -42,6 +43,8 @@ var float HitSoundBoost;		// HitSoundVolume 1 plays at this; plain 1 is lost und
 var float HitSoundInterval;		// at most one per this long (one hit on two targets)
 var float LastHitSoundTime;
 var int PendingSoundAmount;		// the frame's hits so far (one explosion on several targets), sounded together in Tick
+var bool bPendingStomp;         // one of them was landing on someone's head: boing instead
+var Sound StompSound;
 
 // optionally, the hit sound's pitch by the hit's damage: HitSoundPitchHigh for
 // the smallest, down to HitSoundPitchLow at HitSoundPitchDamage and up
@@ -51,7 +54,7 @@ var config float HitSoundPitchHigh, HitSoundPitchLow, HitSoundPitchDamage;
 // A hit: its number and sound, only if it's in sight of the camera (InSight),
 // so hits around corners don't give away targets you hadn't seen. Once shown,
 // a number stays up wherever its target goes.
-simulated function ShowHit(PlayerController PC, Pawn Victim, vector Loc, int Amount, byte Kind)
+simulated function ShowHit(PlayerController PC, Pawn Victim, vector Loc, int Amount, byte Kind, bool bStomp)
 {
     local Actor ViewActor;
     local vector CamLoc;
@@ -62,6 +65,8 @@ simulated function ShowHit(PlayerController PC, Pawn Victim, vector Loc, int Amo
         return;
     AddDamage(Victim, Loc, Amount, Kind);
     PendingSoundAmount += Amount;
+    if ( bStomp )
+        bPendingStomp = true;
     Enable('Tick');
 }
 
@@ -74,16 +79,25 @@ simulated function Tick(float DeltaTime)
     {
         PC = Level.GetLocalPlayerController();
         if ( PC != None )
-            PlayHitSound(PC, PendingSoundAmount);
+            PlayHitSound(PC, PendingSoundAmount, bPendingStomp);
         PendingSoundAmount = 0;
+        bPendingStomp = false;
     }
     Disable('Tick');
 }
 
-simulated function PlayHitSound(PlayerController PC, int Amount)
+// a stomp boings, unpitched, even inside HitSoundInterval of another hit
+simulated function PlayHitSound(PlayerController PC, int Amount, bool bStomp)
 {
     local float Pitch;
 
+    if ( bStomp && StompSound != None && HitSoundVolume > 0 )
+    {
+        LastHitSoundTime = Level.TimeSeconds;
+        if ( PC.ViewTarget != None )
+            PC.ViewTarget.PlaySound(StompSound, SLOT_None, HitSoundVolume * HitSoundBoost,,,, false);
+        return;
+    }
     if ( HitSound == None || HitSoundVolume <= 0 || Level.TimeSeconds - LastHitSoundTime < HitSoundInterval )
         return;
     LastHitSoundTime = Level.TimeSeconds;
@@ -227,6 +241,7 @@ defaultproperties
     NumberSize=1.000000
     HitSoundVolume=1.000000
     HitSound=Sound'DamageNumbers.Tonk'
+    StompSound=Sound'DamageNumbers.Boing'
     HitSoundBoost=2.000000
     HitSoundInterval=0.050000
     bHitSoundPitchByDamage=False

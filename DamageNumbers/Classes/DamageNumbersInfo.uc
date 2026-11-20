@@ -16,8 +16,9 @@ replication
 }
 
 // Victim arrives as None when it isn't replicated to this client; Loc is
-// above its head when hit; Kind is the colour (DamageNumbersOverlay.AddDamage)
-simulated function ClientShowDamage(Pawn Victim, vector Loc, int Amount, byte Kind)
+// above its head when hit; Kind is the colour (DamageNumbersOverlay.AddDamage);
+// bStomp, landed on its head
+simulated function ClientShowDamage(Pawn Victim, vector Loc, int Amount, byte Kind, bool bStomp)
 {
     local PlayerController PC;
 
@@ -29,7 +30,7 @@ simulated function ClientShowDamage(Pawn Victim, vector Loc, int Amount, byte Ki
     if ( Overlay == None )
         return;
     PC.myHUD.AddHudOverlay(Overlay);	// ignores one it already has
-    Overlay.ShowHit(PC, Victim, Loc, Amount, Kind);
+    Overlay.ShowHit(PC, Victim, Loc, Amount, Kind, bStomp);
 }
 
 simulated function Destroyed()
