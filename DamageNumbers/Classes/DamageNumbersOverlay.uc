@@ -6,7 +6,7 @@
 //  target's projected position, following it while it's in view; hits out of
 //  sight behind walls or other world geometry aren't shown (ShowHit). UDamage
 //  purple while your UDamage doubles them; teal (UDamage Reward v2's defensive
-//  UDamage) when the target's cuts them. Fed by
+//  UDamage) when the target's cuts them (unless bUDamageColors is off). Fed by
 //  DamageNumbersInfo; drawn by the HUD with its other overlays, so it hides
 //  with the HUD. Also plays the hit sound (PlayHitSound), optionally pitched
 //  by the hit's damage, or a cartoon boing when you land on someone's head.
@@ -35,6 +35,7 @@ var float PopScale;
 var float RiseHeight;	// how far it floats up, as a share of the screen height
 var color UDamageColor, DefensiveUDamageColor;
 var config float NumberSize;	// each player's own, in their User.ini: 1 is the HUD's small font
+var config bool bUDamageColors;	// each player's own: UDamage hits purple/teal (Kind); off, coloured by size like the rest
 
 // hit sound: each player's own, in their User.ini; 0 turns it off
 var config float HitSoundVolume;
@@ -192,9 +193,9 @@ simulated function Render(Canvas C)
         C.DrawColor = class'Canvas'.static.MakeColor(0, 0, 0, 200 * Alpha);
         C.SetPos(Screen.X - XL / 2 + 2, Screen.Y - YL / 2 + 2);
         C.DrawText(S);
-        if ( Numbers[i].Kind == 1 )
+        if ( Numbers[i].Kind == 1 && bUDamageColors )
             C.DrawColor = UDamageColor;
-        else if ( Numbers[i].Kind == 2 )
+        else if ( Numbers[i].Kind == 2 && bUDamageColors )
             C.DrawColor = DefensiveUDamageColor;
         else
             C.DrawColor = NumberColor(Numbers[i].Amount, Alpha);
@@ -239,6 +240,7 @@ defaultproperties
     UDamageColor=(B=255,G=70,R=190,A=255)
     DefensiveUDamageColor=(B=200,G=210,R=20,A=255)
     NumberSize=1.000000
+    bUDamageColors=True
     HitSoundVolume=1.000000
     HitSound=Sound'DamageNumbers.Tonk'
     StompSound=Sound'DamageNumbers.Boing'

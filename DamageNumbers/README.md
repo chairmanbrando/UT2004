@@ -2,11 +2,12 @@
 
 Damage numbers pop up RPG-style over targets you hit... provided they're within your line of sight. The number includes overkill damage, so if you headshot someone while holding the UDamage, you'll see the full amount even if it only took a fraction of that to kill them. Very satisfying!
 
-Hits on the same target within 0.3s of each other add up and share a single number so things don't get cluttered with multi-hits or very fast hits. Similarly, they fade out and upward after half a second of being settled from adding up. The numbers' size can be set in `User.ini`, from `0.5` to `2.0`:
+Hits on the same target within 0.3s of each other add up and share a single number so things don't get cluttered with multi-hits or very fast hits. Similarly, they fade out and upward after half a second of being settled from adding up. The numbers' size can be set in `User.ini`, from `0.5` to `2.0`, and hits boosted by your UDamage (or cut by a target's defensive one) turn purple (or teal) unless you turn that off:
 
 ```ini
 [DamageNumbers.DamageNumbersOverlay]
 NumberSize=1.1
+bUDamageColors=True
 ```
 
 Because everyone loves a good hitsound (probably), this mutator includes a pleasing "tonk" on hit -- again limited to line-of-sight targets. Options are available to scale this as you see fit via `User.ini`:
