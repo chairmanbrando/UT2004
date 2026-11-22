@@ -10,12 +10,13 @@
 !/Tools/
 
 # 3) These mutator sources
-!/UT2026/
-!/UT2026Bots/
-!/UDamageRewardV2/
 !/AdrenalineReward/
+!/CTFHalftime/
 !/DamageNumbers/
 !/GunGame/
+!/UDamageRewardV2/
+!/UT2026Bots/
+!/UT2026/
 !/WeaponTest/
 
 # ...but not my todo lists.
