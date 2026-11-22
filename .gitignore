@@ -1,15 +1,15 @@
 # Ignore the whole game install except...
 /*
 
-# These particular files...
+# 1) These particular files
 !/.gitignore
 !/README.md
 
-# Handy setup stuff and tools...
+# 2) Handy setup stuff and tools
 !/.vscode/
 !/Tools/
 
-# And these mutator sources.
+# 3) These mutator sources
 !/UT2026/
 !/UT2026Bots/
 !/UDamageRewardV2/
@@ -17,3 +17,6 @@
 !/DamageNumbers/
 !/GunGame/
 !/WeaponTest/
+
+# ...but not my todo lists.
+/*/todo.md
