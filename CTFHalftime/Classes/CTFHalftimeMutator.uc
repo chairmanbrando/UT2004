@@ -253,6 +253,7 @@ function SecondHalf()
         if ( ShouldReset(A) )
             A.Reset();
     ResetVehicles();
+    AssignBotOrders();
 
     Rules.bFrozen = false;
     G.RemainingTime = HeldTime;
@@ -440,9 +441,30 @@ function SwapTeams()
         NewTeam = G.Teams[1 - OldTeam.TeamIndex];
         OldTeam.RemoveFromTeam(C);
         NewTeam.AddToTeam(C);
-        if ( Bot(C) != None )
-            NewTeam.SetBotOrders(Bot(C), None);
     }
+}
+
+// Each bot's orders on its new team, as CTF gives them out to bots joining a
+// match: RemoveFromTeam took every bot out of its squad (each emptied squad
+// destroys itself), and with no roster recommendation (Instant Action's bots
+// have none) TeamAI.SetBotOrders deals them out down CTFTeamAI's OrderList,
+// mostly attackers, some defenders and a freelancer, from the top. After the
+// reset, which clears squads' objectives (SquadAI.Reset), so the new squads
+// keep theirs.
+function AssignBotOrders()
+{
+    local TeamGame G;
+    local Controller C;
+    local int i;
+
+    G = TeamGame(Level.Game);
+    for ( i = 0; i < 2; i++ )
+        if ( G.Teams[i].AI != None )
+            G.Teams[i].AI.OrderOffset = 0;
+
+    for ( C = Level.ControllerList; C != None; C = C.NextController )
+        if ( Bot(C) != None && IsPlaying(C) && UnrealTeamInfo(C.PlayerReplicationInfo.Team) != None )
+            UnrealTeamInfo(C.PlayerReplicationInfo.Team).SetBotOrders(Bot(C), None);
 }
 
 // Everything but the game's bookkeeping (Info: the game, team and player
