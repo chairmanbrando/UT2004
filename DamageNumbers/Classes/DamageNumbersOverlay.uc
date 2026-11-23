@@ -16,7 +16,7 @@ class DamageNumbersOverlay extends HudOverlay
     config(User);
 
 #exec AUDIO IMPORT FILE=Sounds\Tonk.wav NAME=Tonk
-#exec AUDIO IMPORT FILE=Sounds\Boing.wav NAME=Boing
+#exec AUDIO IMPORT FILE=Sounds\Boing3.wav NAME=Boing
 
 struct DamageNumber
 {
@@ -55,14 +55,14 @@ var config float HitSoundPitchHigh, HitSoundPitchLow, HitSoundPitchDamage;
 // A hit: its number and sound, only if it's in sight of the camera (InSight),
 // so hits around corners don't give away targets you hadn't seen. Once shown,
 // a number stays up wherever its target goes.
-simulated function ShowHit(PlayerController PC, Pawn Victim, vector Loc, int Amount, byte Kind, bool bStomp)
+simulated function ShowHit(PlayerController PC, Pawn Victim, vector Loc, vector HitLoc, int Amount, byte Kind, bool bStomp)
 {
     local Actor ViewActor;
     local vector CamLoc;
     local rotator CamRot;
 
     PC.PlayerCalcView(ViewActor, CamLoc, CamRot);
-    if ( !InSight(Victim, Loc, CamLoc) )
+    if ( !InSight(Victim, Loc, HitLoc, CamLoc) )
         return;
     AddDamage(Victim, Loc, Amount, Kind);
     PendingSoundAmount += Amount;
@@ -208,15 +208,23 @@ simulated function Render(Canvas C)
     C.FontScaleY = 1.0;
 }
 
-// Whether world geometry leaves Loc (above Victim's head), or the living
-// Victim's middle, visible from the camera. Either will do: under a low
-// ceiling Loc can be in it while the target is in plain view.
-simulated function bool InSight(Pawn Victim, vector Loc, vector CamLoc)
+// Whether world geometry leaves the spot the hit landed (HitLoc: a shot that
+// got there came past whatever's in the way, whichever side of the body it
+// hit), or any of the living Victim's head, middle or feet, visible from the
+// camera: below a ledge only the feet may show. (The head and feet points are
+// a little inside the top and bottom of the collision, so they aren't in the
+// ceiling or floor.) A killing hit usually arrives with the death, the Victim
+// already dead or gone (gibbed): then HitLoc, or Loc, where the number goes,
+// above where its head was.
+simulated function bool InSight(Pawn Victim, vector Loc, vector HitLoc, vector CamLoc)
 {
-    if ( FastTrace(Loc, CamLoc) )
+    if ( HitLoc != vect(0,0,0) && FastTrace(HitLoc, CamLoc) )
         return true;
-    return Victim != None && !Victim.bDeleteMe && Victim.Health > 0
-        && FastTrace(Victim.Location, CamLoc);
+    if ( Victim == None || Victim.bDeleteMe || Victim.Health <= 0 )
+        return FastTrace(Loc, CamLoc);
+    return FastTrace(Victim.Location + 0.8 * Victim.CollisionHeight * vect(0,0,1), CamLoc)
+        || FastTrace(Victim.Location, CamLoc)
+        || FastTrace(Victim.Location - (Victim.CollisionHeight - 8) * vect(0,0,1), CamLoc);
 }
 
 // white for small hits, through yellow at 50 and orange at 100, to red for
