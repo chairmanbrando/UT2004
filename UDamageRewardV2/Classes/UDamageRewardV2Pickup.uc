@@ -24,9 +24,17 @@ function GiveUDamageTo(Pawn P)
         NewTime += FMax( xPawn(P).UDamageTime - Level.TimeSeconds, 0 );
 
     P.EnableUDamage(FMin(NewTime, MaxUDamageTime));
-    class'UDamageUtil'.static.ResetWarningIfExtended(P);
+    class'UDamageUtil'.static.AfterEnableUDamage(P);
     AnnouncePickup(P);
     SetRespawn();
+}
+
+// its sound through UDamageUtil.PlayUDamageSound, at the holder's and
+// everyone else's volumes
+function AnnouncePickup(Pawn Receiver)
+{
+    Receiver.HandlePickup(self);
+    class'UDamageUtil'.static.PlayUDamageSound(Receiver, PickupSound, TransientSoundRadius);
 }
 
 auto state Pickup

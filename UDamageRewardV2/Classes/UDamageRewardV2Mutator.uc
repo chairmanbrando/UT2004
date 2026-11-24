@@ -7,6 +7,9 @@
 //    (UDamageRewardV2Pickup).
 //  - The "UDamage ending" warning restarts properly after an extension
 //    (UDamageUtil).
+//  - Optionally our unclipped UDamage sound, for its pickup and its ending
+//    warning; and their volumes, the holder's apart from everyone else's
+//    (UDamageUtil, UDamageV2Timer).
 //  - UDamage chargers use UDamageV2Pack for a longer-range respawn sound.
 //  - Optionally defensive: UDamage protects its holder (UDamageRewardV2Rules.NetDamage)
 //    instead of doubling damage dealt, with its own pickup message (DefensiveUDamagePack,
@@ -27,15 +30,22 @@ var config float KillBonusTime;		// seconds of UDamage added per kill
 var config bool bCapUDamageTime;	// cap at 30s like a stock pickup; otherwise 999s
 var config float SpawnSoundRadius;	// range of the UDamage respawn sound; 0 keeps the stock sound
 var config string SpawnSound;
+var config float SpawnSoundVolume;
 var config bool bDefensiveUDamage;	// UDamage protects its holder instead of doubling damage dealt
 var config bool bRuckusMode;        // armor chargers, big kegs and wildcard bases spawn UDamage
 var config float RuckusRespawnTime; // seconds between UDamage respawns in Ruckus Mode (stock 90)
+var config bool bUnclippedUDamageSound; // our UDamage sound for pickups and the ending warning
+var config float UDamageSoundVolume;    // those, as everyone else hears them
+var config float HolderSoundVolume;     // those, as the holder hears them
 var byte DefensiveLightHue;		// teal
 
 var localized string KillBonusDisplayText, CapDisplayText, KillBonusDescText, CapDescText;
 var localized string DefensiveDisplayText, DefensiveDescText;
 var localized string RuckusDisplayText, RuckusDescText, RuckusRespawnDisplayText, RuckusRespawnDescText;
 var localized string SoundRadiusDisplayText, SoundDisplayText, SoundRadiusDescText, SoundDescText;
+var localized string UnclippedDisplayText, UnclippedDescText;
+var localized string SpawnVolumeDisplayText, SpawnVolumeDescText;
+var localized string UDamageVolumeDisplayText, UDamageVolumeDescText, HolderVolumeDisplayText, HolderVolumeDescText;
 
 event PostBeginPlay()
 {
@@ -73,6 +83,10 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant)
 {
     local int i;
 
+    // every UDamage pickup: chargers', wildcard bases', dropped ones
+    if ( UDamagePack(Other) != None )
+        UDamagePack(Other).PickupSound = class'UDamageUtil'.static.UDamageSound();
+
     if ( WildcardBase(Other) != None )
     {
         // picks one of these each respawn (WildcardBase.TurnOn)
@@ -88,6 +102,7 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant)
     {
         UDamageV2Pack(Other).SpawnSoundName = SpawnSound;
         UDamageV2Pack(Other).SpawnSoundRadius = SpawnSoundRadius;
+        UDamageV2Pack(Other).SpawnSoundVolume = SpawnSoundVolume;
         if ( bRuckusMode )
         {
             UDamageV2Pack(Other).RespawnTime = FMax(1, RuckusRespawnTime);
@@ -128,6 +143,10 @@ static function FillPlayInfo(PlayInfo PlayInfo)
     PlayInfo.AddSetting(default.RulesGroup, "bCapUDamageTime", default.CapDisplayText, 0, 1, "Check");
     PlayInfo.AddSetting(default.RulesGroup, "SpawnSoundRadius", default.SoundRadiusDisplayText, 0, 1, "Text", "6;0:100000");
     PlayInfo.AddSetting(default.RulesGroup, "SpawnSound", default.SoundDisplayText, 0, 1, "Text", "64");
+    PlayInfo.AddSetting(default.RulesGroup, "SpawnSoundVolume", default.SpawnVolumeDisplayText, 0, 1, "Text", "4;0:2");
+    PlayInfo.AddSetting(default.RulesGroup, "bUnclippedUDamageSound", default.UnclippedDisplayText, 0, 1, "Check");
+    PlayInfo.AddSetting(default.RulesGroup, "UDamageSoundVolume", default.UDamageVolumeDisplayText, 0, 1, "Text", "4;0:2");
+    PlayInfo.AddSetting(default.RulesGroup, "HolderSoundVolume", default.HolderVolumeDisplayText, 0, 1, "Text", "4;0:2");
     PlayInfo.AddSetting(default.RulesGroup, "bDefensiveUDamage", default.DefensiveDisplayText, 0, 1, "Check");
     PlayInfo.AddSetting(default.RulesGroup, "bRuckusMode", default.RuckusDisplayText, 0, 1, "Check");
     PlayInfo.AddSetting(default.RulesGroup, "RuckusRespawnTime", default.RuckusRespawnDisplayText, 0, 1, "Text", "3;1:999");
@@ -141,6 +160,10 @@ static event string GetDescriptionText(string PropName)
         case "bCapUDamageTime":		return default.CapDescText;
         case "SpawnSoundRadius":	return default.SoundRadiusDescText;
         case "SpawnSound":		return default.SoundDescText;
+        case "bUnclippedUDamageSound":  return default.UnclippedDescText;
+        case "SpawnSoundVolume":    return default.SpawnVolumeDescText;
+        case "UDamageSoundVolume":  return default.UDamageVolumeDescText;
+        case "HolderSoundVolume":   return default.HolderVolumeDescText;
         case "bDefensiveUDamage":	return default.DefensiveDescText;
         case "bRuckusMode":         return default.RuckusDescText;
         case "RuckusRespawnTime":   return default.RuckusRespawnDescText;
@@ -151,14 +174,26 @@ static event string GetDescriptionText(string PropName)
 
 defaultproperties
 {
-    KillBonusTime=5.000000
+    KillBonusTime=3.000000
     bCapUDamageTime=True
-    SpawnSoundRadius=1000.000000
-    SpawnSound="AssaultSounds.AssaultRifle.Ceiling_Open_Close" // "WeaponSounds.item_respawn"
+    SpawnSoundRadius=3000.000000
+    SpawnSound="UDamageRewardV2.UDamagePickupRev"
     bDefensiveUDamage=False
     DefensiveLightHue=128
     bRuckusMode=False
     RuckusRespawnTime=30.000000
+    bUnclippedUDamageSound=True
+    SpawnSoundVolume=0.450000
+    UDamageSoundVolume=0.900000
+    HolderSoundVolume=0.500000
+    SpawnVolumeDisplayText="UDamage Respawn Sound Volume"
+    SpawnVolumeDescText="Volume of the UDamage respawn sound, 0 to 2. Stock's pickup sounds play at 0.3."
+    UDamageVolumeDisplayText="UDamage Sound Volume"
+    UDamageVolumeDescText="Volume of the UDamage pickup sound and ending warning as other players hear them, from the holder, 0 to 2. Stock: 0.3 for the pickup, 0.45 for the warning."
+    HolderVolumeDisplayText="UDamage Sound Volume (Holder)"
+    HolderVolumeDescText="Volume of the UDamage pickup sound and ending warning as the holder hears them, right at their ears, 0 to 2."
+    UnclippedDisplayText="Unclipped UDamage Sound"
+    UnclippedDescText="Picking up UDamage and its ending warning play a remake of the stock sound without its harsh clipping. Off: the stock sound."
     RuckusDisplayText="Ruckus Mode"
     RuckusDescText="Every armor charger, big health keg and wildcard base spawns UDamage instead, and armor lying loose in the map is removed. All UDamage respawns on the Ruckus respawn time, and UDamage time stacks without the 30-second cap. Everything else in this mutator applies to them."
     RuckusRespawnDisplayText="Ruckus UDamage Respawn Time"
@@ -172,7 +207,7 @@ defaultproperties
     KillBonusDescText="Seconds of UDamage time added when a player with UDamage gets a kill."
     CapDescText="Limit UDamage time gained from kills and dropped pickups to 30 seconds. When off, or in Ruckus Mode, the limit is 999 seconds."
     SoundRadiusDescText="How far away (in Unreal units) players can hear a UDamage respawn; the stock range is 300. 0 keeps the stock sound."
-    SoundDescText="Sound played from the UDamage charger when UDamage respawns, as Package.Group.Name. The default is the stock pickup respawn sound."
+    SoundDescText="Sound played from the UDamage charger when UDamage respawns, as Package.Group.Name. The default is this mutator's UDamage sound, reversed."
     GroupName="UDamageReward"
     FriendlyName="UDamage Reward v2"
     Description="Remaining UDamage is dropped when its holder is fragged, and can be caught mid-air; kills made with UDamage add to its time, up to a cap; its respawn can be heard from farther away. Use instead of the stock UDamage Reward."

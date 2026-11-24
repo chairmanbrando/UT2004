@@ -2,7 +2,7 @@
 
 Fixes a long-standing bug where a dropped UDamage caught in midair wouldn't actually provide the power to the catcher despite the visible catch and the "someone got a UDamage" sound playing.
 
-It also fixes what I personally consider a bug but is really only preference: The holder's entire character model glows purple while under UDamage's effect instead of only their gun. You no longer need a keen eye to pick out who to go after! Temporary whole-character effects, like being hit while armored, take precedence over this new glow so as to not upset damage messaging.
+It also fixes what I personally consider a bug but is really only preference: Instead of only their gun, the holder's entire character model glows purple while under UDamage's effect. You no longer need a keen eye to pick out whomst to go after! Temporary whole-character effects, like being hit while armored, take precedence over this new glow so as to not upset damage messaging.
 
 Note: This is meant to be used *in place* of the original mutator rather than alongside it. The original doesn't provide a `GroupName` in its `defaultproperties` so I cannot make these two mutually exclusive. It's on you, brother!
 
@@ -12,22 +12,30 @@ Note: This is meant to be used *in place* of the original mutator rather than al
 
 To make things a little more interesting, this version is configurable to allow for kills to extend the length of your damage boost! Aggression rewards you with more time for aggression!
 
-If you so desire, you could set it such that whoever's gotten it is essentially always dealing double damage until they die. But a more "competitive" setting is probably more in the realm of 1-2 seconds of extra time per kill.
+If you so desire, you could set it such that whoever's gotten it is essentially always dealing double damage until they die. But a more "competitive" setting is probably more in the realm of 1-2 seconds of extra time per kill. This rewards carnage without making it likely the holder will be powered up for a minute or more.
 
 #### Arena-wide respawn sounds!
 
-The sound played when the UDamage spawns, and the range at which it's heard, can be changed. Why force pickup timing onto players when you can simply announce the UDamage's return to the whole arena?
+The sound played when the UDamage spawns, its volume, and the range at which it's heard, can be changed. Why force UDamage timing onto players when you can simply announce its return to the whole arena?
 
-Here are some decent enough sounds you can use:
+Here are some respawn sound options you can use:
 
-- `AssaultSounds.AssaultRifle.IonPowerUp`
-- `AmbModern.OneShot.cscanS2`
+- `PickupSounds.UDamagePickup` (stock)
+- `UDamageRewardV2.UDamagePickup` (unclipped remake; see below)
+- `UDamageRewardV2.UDamagePickupRev` (unclipped remake backwards)
 - `AmbModern.OneShot.hiss2`
 - `AmbModern.OneShot.light5a`
 - `AmbModern.OneShot.scream12`
 - `AmbModern.OneShot.teleprt5`
+- `AssaultSounds.AssaultRifle.IonPowerUp`
 
-If none satisfy, leave it stock or find your own in UnrealEd's sound package browser.
+If none satisfy, leave it stock or find your favorite in UnrealEd's sound package browser.
+
+#### A new UDamage sound!
+
+The stock UDamage pickup sound is loud and boosted to the point of heavy clipping, so this mutator comes with a from-scratch remake that's roughly as loud without the harshness. With the _Unclipped UDamage Sound_ option enabled, this new sound plays (at a configurable volume) when the UDamage is picked up and when it's running out.
+
+There's a further third option for controlling the volume of the warning sound as the UDamage holder hears it. The stock sound plays extra loudly and right at your ears, so that deafening **WARG WARG WARG WARG** is no more.
 
 #### Offense through defense!
 

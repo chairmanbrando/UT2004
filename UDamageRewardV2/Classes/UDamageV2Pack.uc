@@ -8,10 +8,19 @@
 //  the old one's respawn effect, the old one's effect would go with whatever
 //  comes next: there, this keeps the stock effect, and plays its own sound as
 //  it arrives instead (state Pickup), so only UDamage gets it.
+//  Its pickup sound plays through UDamageUtil.PlayUDamageSound, at the
+//  holder's and everyone else's volumes.
+//  Imports our unclipped UDamage sound (Sounds\UDamagePickup.wav, from
+//  MakeUDamagePickup.ps1), used with the Unclipped UDamage Sound setting
+//  (UDamageUtil.UDamageSound); and its reverse (UDamagePickupRev), for the
+//  SpawnSound setting.
 //==============================================================================
 
 class UDamageV2Pack extends UDamagePack
     notplaceable;
+
+#exec AUDIO IMPORT FILE=Sounds\UDamagePickup.wav NAME=UDamagePickup
+#exec AUDIO IMPORT FILE=Sounds\UDamagePickupRev.wav NAME=UDamagePickupRev
 
 var string SpawnSoundName;	// set by UDamageRewardV2Mutator
 var float SpawnSoundRadius;	// 0 keeps the stock respawn effect and sound
@@ -59,6 +68,12 @@ function RespawnEffect()
     PlaySpawnSound();
 }
 
+function AnnouncePickup(Pawn Receiver)
+{
+    Receiver.HandlePickup(self);
+    class'UDamageUtil'.static.PlayUDamageSound(Receiver, PickupSound, TransientSoundRadius);
+}
+
 // same as UDamagePack's, plus the warning reset and, in Ruckus Mode, stacking
 // (stock tops the holder up to 30s instead)
 auto state Pickup
@@ -75,7 +90,7 @@ auto state Pickup
             if ( bStackTime && xPawn(P) != None )
                 Time = FMin(Time + FMax(xPawn(P).UDamageTime - Level.TimeSeconds, 0), MaxStackTime);
             P.EnableUDamage(Time);
-            class'UDamageUtil'.static.ResetWarningIfExtended(P);
+            class'UDamageUtil'.static.AfterEnableUDamage(P);
             AnnouncePickup(P);
             SetRespawn();
         }

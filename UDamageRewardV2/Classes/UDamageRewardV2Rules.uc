@@ -59,7 +59,7 @@ function ScoreKill(Controller Killer, Controller Killed)
         if ( P != None && P.HasUDamage() )
         {
             P.EnableUDamage(FMin(P.UDamageTime - Level.TimeSeconds + KillBonusTime, MaxUDamageTime));
-            class'UDamageUtil'.static.ResetWarningIfExtended(P);
+            class'UDamageUtil'.static.AfterEnableUDamage(P);
         }
     }
 
