@@ -8,13 +8,13 @@ Note: This is meant to be used *in place* of the original mutator rather than al
 
 ## But wait, there's more!
 
-#### Extend Your Carnage!
+#### Extend your carnage!
 
 To make things a little more interesting, this version is configurable to allow for kills to extend the length of your damage boost! Aggression rewards you with more time for aggression!
 
 If you so desire, you could set it such that whoever's gotten it is essentially always dealing double damage until they die. But a more "competitive" setting is probably more in the realm of 1-2 seconds of extra time per kill.
 
-#### Arena-wide Respawn Sounds!
+#### Arena-wide respawn sounds!
 
 The sound played when the UDamage spawns, and the range at which it's heard, can be changed. Why force pickup timing onto players when you can simply announce the UDamage's return to the whole arena?
 
@@ -29,7 +29,7 @@ Here are some decent enough sounds you can use:
 
 If none satisfy, leave it stock or find your own in UnrealEd's sound package browser.
 
-#### Offense Through Defense!
+#### Offense through defense!
 
 There's also an option to turn the UDamage into a defensive power-up if that's more your speed. When enabled the pickup becomes teal, applying a teal glow to the holder's character model, and provides substantial (two-thirds) damage reduction, halves outside sources of knockback, and eliminates self and falling damage entirely.
 
