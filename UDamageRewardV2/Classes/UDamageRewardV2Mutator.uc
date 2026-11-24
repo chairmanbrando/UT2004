@@ -143,10 +143,10 @@ static function FillPlayInfo(PlayInfo PlayInfo)
     PlayInfo.AddSetting(default.RulesGroup, "bCapUDamageTime", default.CapDisplayText, 0, 1, "Check");
     PlayInfo.AddSetting(default.RulesGroup, "SpawnSoundRadius", default.SoundRadiusDisplayText, 0, 1, "Text", "6;0:100000");
     PlayInfo.AddSetting(default.RulesGroup, "SpawnSound", default.SoundDisplayText, 0, 1, "Text", "64");
-    PlayInfo.AddSetting(default.RulesGroup, "SpawnSoundVolume", default.SpawnVolumeDisplayText, 0, 1, "Text", "4;0:2");
+    PlayInfo.AddSetting(default.RulesGroup, "SpawnSoundVolume", default.SpawnVolumeDisplayText, 0, 1, "Text", "4;0.0:2.0");
     PlayInfo.AddSetting(default.RulesGroup, "bUnclippedUDamageSound", default.UnclippedDisplayText, 0, 1, "Check");
-    PlayInfo.AddSetting(default.RulesGroup, "UDamageSoundVolume", default.UDamageVolumeDisplayText, 0, 1, "Text", "4;0:2");
-    PlayInfo.AddSetting(default.RulesGroup, "HolderSoundVolume", default.HolderVolumeDisplayText, 0, 1, "Text", "4;0:2");
+    PlayInfo.AddSetting(default.RulesGroup, "UDamageSoundVolume", default.UDamageVolumeDisplayText, 0, 1, "Text", "4;0.0:2.0");
+    PlayInfo.AddSetting(default.RulesGroup, "HolderSoundVolume", default.HolderVolumeDisplayText, 0, 1, "Text", "4;0.0:2.0");
     PlayInfo.AddSetting(default.RulesGroup, "bDefensiveUDamage", default.DefensiveDisplayText, 0, 1, "Check");
     PlayInfo.AddSetting(default.RulesGroup, "bRuckusMode", default.RuckusDisplayText, 0, 1, "Check");
     PlayInfo.AddSetting(default.RulesGroup, "RuckusRespawnTime", default.RuckusRespawnDisplayText, 0, 1, "Text", "3;1:999");
@@ -183,7 +183,7 @@ defaultproperties
     bRuckusMode=False
     RuckusRespawnTime=30.000000
     bUnclippedUDamageSound=True
-    SpawnSoundVolume=0.450000
+    SpawnSoundVolume=0.900000
     UDamageSoundVolume=0.900000
     HolderSoundVolume=0.500000
     SpawnVolumeDisplayText="UDamage Respawn Sound Volume"
