@@ -4,6 +4,10 @@
 //  with a louder, longer-range one played from the server. Picking it up while
 //  your UDamage warning is playing restarts the next warning from the top
 //  (UDamageUtil).
+//  On a wildcard charger, which swaps its pickup for a random one only after
+//  the old one's respawn effect, the old one's effect would go with whatever
+//  comes next: there, this keeps the stock effect, and plays its own sound as
+//  it arrives instead (state Pickup), so only UDamage gets it.
 //==============================================================================
 
 class UDamageV2Pack extends UDamagePack
@@ -16,10 +20,10 @@ var Sound SpawnSound;
 var bool bStackTime;		// set by UDamageRewardV2Mutator in Ruckus Mode: adds to the holder's time, up to MaxStackTime
 var float MaxStackTime;
 
-function RespawnEffect()
+// SpawnSound, loaded from SpawnSoundName the first time; None if it's off or
+// won't load
+function Sound GetSpawnSound()
 {
-    local Actor Source;
-
     if ( SpawnSound == None && SpawnSoundName != "" && SpawnSoundRadius > 0 )
     {
         SpawnSound = Sound(DynamicLoadObject(SpawnSoundName, class'Sound', true));
@@ -29,20 +33,30 @@ function RespawnEffect()
             SpawnSoundName = "";
         }
     }
+    return SpawnSound;
+}
 
-    if ( SpawnSound == None )
+function PlaySpawnSound()
+{
+    local Actor Source;
+
+    // the charger base is visible and present on clients; the pickup may still be hidden here
+    Source = PickupBase;
+    if ( Source == None )
+        Source = self;
+    Source.PlaySound(SpawnSound, SLOT_None, SpawnSoundVolume, false, SpawnSoundRadius);
+}
+
+function RespawnEffect()
+{
+    if ( WildcardBase(PickupBase) != None || GetSpawnSound() == None )
     {
         Super.RespawnEffect();
         return;
     }
 
     spawn(class'UDamageRespawnEffect');
-
-    // the charger base is visible and present on clients; the pickup is still hidden here
-    Source = PickupBase;
-    if ( Source == None )
-        Source = self;
-    Source.PlaySound(SpawnSound, SLOT_None, SpawnSoundVolume, false, SpawnSoundRadius);
+    PlaySpawnSound();
 }
 
 // same as UDamagePack's, plus the warning reset and, in Ruckus Mode, stacking
@@ -66,6 +80,14 @@ auto state Pickup
             SetRespawn();
         }
     }
+
+// Pickup's, plus, on a wildcard charger, the respawn sound: this has just
+// arrived (Pickup.Transmogrify; its base is set by now). A wildcard
+// charger's first pickup goes straight to sleep, so never gets here.
+Begin:
+    if ( WildcardBase(PickupBase) != None && GetSpawnSound() != None )
+        PlaySpawnSound();
+    CheckTouching();
 }
 
 // Volume matches UDamageTimer's "UDamage ending" beeps: 1.5 * the pawn's
