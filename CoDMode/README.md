@@ -22,7 +22,11 @@ All weapon bases (except super weapons) and all ammo pickups are gone from the m
 
 #### No-brain mode!
 
-For when you really don't want to bother playing the game, all health and armor pickups are removed from the map as well. You spawn with and can regenerate to 150 health. Just like in CoD, a headshot on a fresh spawn is only sometimes a kill. 🙃
+For when you really don't want to bother playing the game, all health and armor pickups are also removed from the map. You spawn with and can regenerate to 150 health to compensate. Just like in CoD, a headshot on a fresh spawn is only sometimes a kill. 🙃
+
+Additionally removed from the map is, well, every other thing you could pick up and could make particular areas of the map more important than others. After all, the core of CoD gameplay insists that no one should have to make decisions or worry about map positioning. It's "not fair" when someone uses anything other than their aim to kill you.
+
+You shoot what's right in front of you, die, respawn, and repeat. Welcome to CoD, baby.
 
 #### "Oh no, I've been shot!" overlay
 
