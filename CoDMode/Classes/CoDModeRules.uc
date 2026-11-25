@@ -15,3 +15,11 @@ function int NetDamage(int OriginalDamage, int Damage, Pawn Injured, Pawn Instig
         Mut.NotifyHit(Injured);
     return Damage;
 }
+
+// with the loadout, a dropped weapon gives at most an ammo pickup's worth
+function bool OverridePickupQuery(Pawn Other, Pickup Item, out byte bAllowPickup)
+{
+    if ( Mut != None && Mut.bLoadoutProvided && WeaponPickup(Item) != None && Item.bDropped )
+        Mut.CapDroppedAmmo(WeaponPickup(Item));
+    return Super.OverridePickupQuery(Other, Item, bAllowPickup);
+}
