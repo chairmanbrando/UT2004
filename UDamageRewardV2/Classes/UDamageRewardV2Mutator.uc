@@ -69,6 +69,7 @@ event PostBeginPlay()
     G = Spawn(class'UDamageRewardV2Rules');
     G.KillBonusTime = KillBonusTime;
     G.bDefensive = bDefensiveUDamage;
+    G.bRuckusMode = bRuckusMode;
     // Ruckus Mode never caps
     if ( bCapUDamageTime && !bRuckusMode )
         G.MaxUDamageTime = 30;

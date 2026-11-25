@@ -12,6 +12,13 @@ var bool bDefensive;		// UDamage protects its holder instead of doubling the dam
 var float DefensiveDamageScale;	// damage a defensive UDamage holder takes from others and the world
 var float DefensiveMomentumScale;	// knockback they take from others
 
+// The map's one UDamage charger pickup, which a dropped UDamage destroyed
+// unclaimed gives its time back to (UDamageRewardV2Pickup.Destroyed). None
+// with Ruckus Mode, or with no charger or several.
+var bool bRuckusMode;
+var bool bChargerChecked;
+var UDamageV2Pack SoleCharger;
+
 // Pawn.TakeDamage and Vehicle.TakeDamage double a UDamage holder's damage
 // before ReduceDamage, so by here it's already doubled; shields are taken off
 // after (xPawn.ShieldAbsorb). Defensive UDamage takes the doubling back, and
@@ -91,6 +98,33 @@ function ThrowUDamage( Controller Killer, xPawn Killed )
 
     Reward.MaxUDamageTime = MaxUDamageTime;
     Reward.InitDrop(Killed.UDamageTime - Level.TimeSeconds);
+}
+
+// Looked for once: chargers' pickups exist from the start of the level,
+// sleeping when taken, and stay through resets. Wildcard bases' come and go,
+// so don't count.
+function UDamageV2Pack GetSoleCharger()
+{
+    local UDamageV2Pack P;
+    local int Count;
+
+    if ( bRuckusMode )
+        return None;
+    if ( !bChargerChecked )
+    {
+        bChargerChecked = true;
+        foreach DynamicActors(class'UDamageV2Pack', P)
+            if ( P.PickupBase != None && WildcardBase(P.PickupBase) == None )
+            {
+                Count++;
+                SoleCharger = P;
+            }
+        if ( Count != 1 )
+            SoleCharger = None;
+    }
+    if ( SoleCharger != None && SoleCharger.bDeleteMe )
+        SoleCharger = None;
+    return SoleCharger;
 }
 
 defaultproperties

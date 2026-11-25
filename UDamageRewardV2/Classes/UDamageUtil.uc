@@ -12,6 +12,7 @@
 //  PlayUDamageSound: the pickup and warning sounds, at two volumes: the
 //  holder's own copy (HolderSoundVolume), which plays right at their ears,
 //  and everyone else's (UDamageSoundVolume), from the holder, in 3D.
+//  FindRules: our game rules.
 //==============================================================================
 
 class UDamageUtil extends Object;
@@ -39,6 +40,19 @@ static function AfterEnableUDamage(Pawn P)
 
     if ( X.UDamageTime - X.Level.TimeSeconds > 3 )
         X.UDamageTimer.SoundCount = 0;
+}
+
+// our game rules, from the game's chain
+static function UDamageRewardV2Rules FindRules(Actor A)
+{
+    local GameRules G;
+
+    if ( A == None || A.Level.Game == None )
+        return None;
+    for ( G = A.Level.Game.GameRulesModifiers; G != None; G = G.NextGameRules )
+        if ( UDamageRewardV2Rules(G) != None )
+            return UDamageRewardV2Rules(G);
+    return None;
 }
 
 // the UDamage pickup and warning sound, stock's or ours (Unclipped UDamage

@@ -45,4 +45,12 @@ This adds a new take on the idea of aggression: What risk would you take if you 
 
 #### Bring the motherfucking ruckus!
 
-Feeling silly? Turn on _Ruckus Mode_ and every armor charger, big health keg, and wildcard base spawns a UDamage instead, with all the options above still in play. Every UDamage respawns every 30 seconds (configurable), and UDamage time stacks with no 30-second cap. No armor, all damage! (Or the reverse in defensive mode.) Even so-called "strategic" maps with no UDamage normally are bigly affected by this nonsense.
+Feeling silly? Turn on _Ruckus Mode_ and every armor charger, big health keg, and wildcard base spawns a UDamage instead, with all the options above still in play. Every UDamage respawns every 30 seconds (configurable), and UDamage time stacks with no 30-second cap.
+
+No armor, all damage! Or the reverse in defensive mode. Even so-called "strategic" maps with no UDamage normally are bigly affected by this nonsense.
+
+#### Accidents happen!
+
+If a dropped UDamage pickup is destroyed prematurely (e.g. the holder falls off the map or burns in lava and throws the pickup into it), the remaining time on the pickup is subtracted from its base's respawn time. Wouldn't want people jumping off the map just to avoid having the UDamage in play, would we?
+
+Importantly, this little "fix" does *not* apply in Ruckus Mode or in maps that have more than one UDamage pickup base. It also doesn't affect wildcard bases as the next powerup to spawn is unknown.

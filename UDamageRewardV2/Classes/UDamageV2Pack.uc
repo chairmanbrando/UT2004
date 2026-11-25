@@ -14,6 +14,10 @@
 //  MakeUDamagePickup.ps1), used with the Unclipped UDamage Sound setting
 //  (UDamageUtil.UDamageSound); and its reverse (UDamagePickupRev), for the
 //  SpawnSound setting.
+//  On a map with only this charger (and no Ruckus Mode), a dropped UDamage
+//  destroyed before anyone claims it (fallen into lava or out of the world)
+//  brings this one's respawn forward by the time that drop had left
+//  (ShortenRespawn, from UDamageRewardV2Pickup.Destroyed).
 //==============================================================================
 
 class UDamageV2Pack extends UDamagePack
@@ -28,6 +32,8 @@ var float SpawnSoundVolume;
 var Sound SpawnSound;
 var bool bStackTime;		// set by UDamageRewardV2Mutator in Ruckus Mode: adds to the holder's time, up to MaxStackTime
 var float MaxStackTime;
+var bool bRespawnCountdown;	// in Sleeping, waiting for its respawn effect
+var float ShortenedWait;	// that wait, shortened (state Sleeping, Shortened)
 
 // SpawnSound, loaded from SpawnSoundName the first time; None if it's off or
 // won't load
@@ -72,6 +78,44 @@ function AnnouncePickup(Pawn Receiver)
 {
     Receiver.HandlePickup(self);
     class'UDamageUtil'.static.PlayUDamageSound(Receiver, PickupSound, TransientSoundRadius);
+}
+
+// Respawn Seconds sooner, if it's still counting down to it
+function ShortenRespawn(float Seconds)
+{
+    if ( Seconds <= 0 || !bRespawnCountdown || !IsInState('Sleeping') )
+        return;
+    // LatentFloat: what's left of the Sleep running
+    ShortenedWait = FMax(LatentFloat - Seconds, 0);
+    GotoState('Sleeping', 'Shortened');
+}
+
+// Pickup's, with a Shortened entry for ShortenRespawn (state code isn't
+// inherited once a state has its own, so the rest is copied)
+state Sleeping
+{
+    ignores Touch;
+
+DelayedSpawn:
+    bRespawnCountdown = true;
+    if ( Level.NetMode == NM_Standalone )
+        Sleep(FMin(30, Level.Game.GameDifficulty * 8));
+    else
+        Sleep(30);
+    Goto('Respawn');
+Begin:
+    bRespawnCountdown = true;
+    Sleep( GetReSpawnTime() - RespawnEffectTime );
+    Goto('Respawn');
+Shortened:
+    Sleep(ShortenedWait);
+Respawn:
+    bRespawnCountdown = false;
+    RespawnEffect();
+    Sleep(RespawnEffectTime);
+    if ( PickUpBase != None )
+        PickUpBase.TurnOn();
+    GotoState('Pickup');
 }
 
 // same as UDamagePack's, plus the warning reset and, in Ruckus Mode, stacking
