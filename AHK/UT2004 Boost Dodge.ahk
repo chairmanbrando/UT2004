@@ -38,7 +38,10 @@ SetKeyDelay KeyDelay, PressTime
 ~d & XButton2::
 ~XButton2 & d::Send "{d}{Space}{d}"
 
-; Set F13 to `quit` in `User.ini`.
+; Set F13 to `disconnect` in `User.ini`.
 ^F11::Send "{F13}"
+
+; Set F14 to `quit` in `User.ini`.
+!F11::Send "{F14}"
 
 #HotIf
