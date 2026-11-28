@@ -41,7 +41,7 @@ SetKeyDelay KeyDelay, PressTime
 ; Set F13 to `disconnect` in `User.ini`.
 ^F11::Send "{F13}"
 
-; Set F14 to `quit` in `User.ini`.
-!F11::Send "{F14}"
+; Setting F14 to `exit` only works in a match; this works wherever.
+!F11::WinClose "A"
 
 #HotIf
