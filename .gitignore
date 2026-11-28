@@ -1,15 +1,20 @@
 # Ignore the whole game install except...
 /*
 
-# 1) These particular files
+# ...Unignore and reignore the maps folder because ignore syntax is very cool.
+!/Maps/
+/Maps/*
+
+# ...These particular files.
 !/.gitignore
 !/README.md
 
-# 2) Handy setup stuff and tools
+# ...Handy setup stuff and tools.
 !/.vscode/
 !/Tools/
+!/AHK/
 
-# 3) These mutator sources
+# ...These mutator sources.
 !/AdrenalineReward/
 !/CoDMode/
 !/CTFHalftime/
